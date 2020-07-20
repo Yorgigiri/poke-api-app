@@ -1,2 +1,2 @@
-# filmogop
-filmogop - is an app that search films randomly
+# pokeApiApp
+App based on PokéAPI https://pokeapi.co/
