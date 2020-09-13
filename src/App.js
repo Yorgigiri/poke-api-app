@@ -23,20 +23,13 @@ function App() {
 
   const loadPokemon = async (data) => {
     const _pokemonData = await Promise.all(
-      data.map(async (pokemon) => {
-        const pokemonRecord = await getPokemon(pokemon.url);
-        // const pokemonRecord = pokemon.url;
-        // console.log('pokemonRecord: ', pokemonRecord);
-
-
-        return pokemonRecord;
-      })
+      data.map(async ({ url }) => await getPokemon(url))
     )
+
     setPokemonData(_pokemonData);
   };
 
-  console.log();
-  console.log(pokemonData);
+  console.log('pokemonData: ', pokemonData);
 
   return (
     <div className="App">
