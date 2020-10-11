@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
+import Card from "./components";
 
 function App() {
   const [pokemonData, setPokemonData] = useState([]);
@@ -33,11 +34,13 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        { loading ? <h1>Loadind...</h1> : (
-          <h1>Data is fetched </h1>
-        )}
-      </div>
+      { loading ? <h1>Loadind...</h1> : (
+        <>
+          {pokemonData.map((pokemon, i) => {
+            return <Card key={i} pokemon={pokemon} />;
+          })}
+        </>
+      )}
     </div>
   );
 }
