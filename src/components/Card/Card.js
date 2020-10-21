@@ -8,9 +8,10 @@ import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     paper: {
         padding: 8,
+        height: 'calc(100% - 16px)',
     },
     cardImage: {
         textAlign: "center",
