@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import classNames from 'classnames/bind';
+import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
 import Card from "./components/Card";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Button } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,23 +29,41 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: 8,
   },
+  spinner: {
+    position: "fixed",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.7)',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    visibility: 'visible',
+    opacity: 1,
+    zIndex: 100,
+    transition: '.4s ease visibility, .4s ease opacity',
+  },
+  spinnerIsHidden: {
+    visibility: 'hidden',
+    opacity: 0,
+  }
 }));
 
 function App() {
   const classes = useStyles();
+  const scrollToBottom = useScrollToBottom();
   const [pokemonData, setPokemonData] = useState([]);
   const [nextUrl, setNextUrl] = useState('');
-  const [prevUrl, setPrevUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const initialUrl = 'https://pokeapi.co/api/v2/pokemon';
 
   useEffect(() => {
     async function fetchData() {
       const response = await getAllPokemon(initialUrl);
-      console.log('response: ', response);
       setNextUrl(response.next);
-      setPrevUrl(response.previous);
-      await loadPokemon(response.results);
+      const firstPokemonData = await loadPokemon(response.results);
+      setPokemonData(firstPokemonData);
       setLoading(false);
     }
 
@@ -50,75 +71,47 @@ function App() {
   }, []);
 
   const loadPokemon = async (data) => {
-    console.log('data: ', data);
-
     const _pokemonData = await Promise.all(
         data.map(async ({ url }) => await getPokemon(url))
     )
 
-    setPokemonData(_pokemonData);
+    return _pokemonData;
   };
 
-  const next = async () => {
-    if (!nextUrl) return;
+  const handleLoadMore = async () => {
     setLoading(true);
+
     const data = await getAllPokemon(nextUrl);
-    console.log('data!!!: ', data);
-    await loadPokemon(data.results);
+    const nextPokemonData = await loadPokemon(data.results);
+
+    setPokemonData([...pokemonData, ...nextPokemonData]);
     setNextUrl(data.next);
-    setPrevUrl(data.previous);
-    setLoading(false)
+    setLoading(false);
+    scrollToBottom();
   }
 
-  const prev = async () => {
-    if (!prevUrl) return;
-    setLoading(true);
-    const data = await getAllPokemon(prevUrl);
-    await loadPokemon(data.results);
-    setNextUrl(data.next);
-    setPrevUrl(data.previous);
-    setLoading(false)
-  }
-
-  console.log('pokemonData: ', pokemonData);
+  const spinnerIsHidden = !loading && classes.spinnerIsHidden;
 
   return (
     <div className={classes.app}>
-        <Container className={classes.mainContainer}>
-          {loading
-              ? <h1>Loading...</h1>
-              : (
-                <>
-                  <h1>Pokemon grid</h1>
-                  <Grid container justify={"center"} className={classes.buttonWrapper}>
-                    <Button onClick={prev} variant="contained" color="primary">
-                      Prev
-                    </Button>
-                    <Button onClick={next} variant="contained" color="primary">
-                      Next
-                    </Button>
-                    {/*<Button variant="contained" color="primary">*/}
-                    {/*  Load More*/}
-                    {/*</Button>*/}
-                  </Grid>
-                  <Grid container className={classes.root} spacing={2}>
-                    {pokemonData.map((pokemon, i) => <Card key={i} pokemon={pokemon} />)}
-                  </Grid>
-                  <Grid container justify={"center"} className={classes.buttonWrapper}>
-                    <Button onClick={prev} variant="contained" color="primary" className={classes.button}>
-                      Prev
-                    </Button>
-                    <Button onClick={next} variant="contained" color="primary" className={classes.button}>
-                      Next
-                    </Button>
-                    {/*<Button variant="contained" color="primary">*/}
-                    {/*  Load More*/}
-                    {/*</Button>*/}
-                  </Grid>
-                </>
-              )
-          }
+      <ScrollToBottom>
+        <Container className={classes.mainContainer} justify={"center"} >
+          <div className={classNames(classes.spinner, spinnerIsHidden)}>
+            <CircularProgress />
+          </div>
+          <h1>Pokemon grid</h1>
+          <Grid container className={classes.buttonWrapper}>
+          </Grid>
+          <Grid container className={classes.root} spacing={2} alignItems="stretch">
+            {pokemonData.map((pokemon, i) => <Card key={i} pokemon={pokemon} />)}
+          </Grid>
+          <Grid container justify={"center"} className={classes.buttonWrapper}>
+            <Button onClick={handleLoadMore} variant="contained" color="primary">
+              Load More
+            </Button>
+          </Grid>
         </Container>
+      </ScrollToBottom>
     </div>
   );
 }
