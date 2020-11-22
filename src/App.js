@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import { connect } from "react-redux";
 import classNames from 'classnames/bind';
 import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
-import Card from "./components/Card";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Button } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Card from "./components/Card";
+import './App.css';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
@@ -103,7 +104,12 @@ function App() {
           <Grid container className={classes.buttonWrapper}>
           </Grid>
           <Grid container className={classes.root} spacing={2} alignItems="stretch">
-            {pokemonData.map((pokemon, i) => <Card key={i} pokemon={pokemon} />)}
+            {pokemonData.map((pokemon, i) =>
+              <Card
+                key={i}
+                pokemon={pokemon}
+              />
+            )}
           </Grid>
           <Grid container justify={"center"} className={classes.buttonWrapper}>
             <Button onClick={handleLoadMore} variant="contained" color="primary">
@@ -116,4 +122,13 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  console.log(state);
+  const atata = [];
+
+  return {
+    atata,
+  }
+}
+
+export default connect(mapStateToProps)(App);
