@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import { connect } from "react-redux";
 import classNames from 'classnames/bind';
 import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
-import Card from "./components/Card";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Button } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import './App.css';
+import { PokemonGrid } from "./components/PokemonGrid/PokemonGrid";
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     visibility: 'visible',
     opacity: 1,
     zIndex: 100,
-    transition: '.4s ease visibility, .4s ease opacity',
+    transition: '.7s ease visibility, .7s ease opacity',
   },
   spinnerIsHidden: {
     visibility: 'hidden',
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function App() {
+function App(props) {
   const classes = useStyles();
   const scrollToBottom = useScrollToBottom();
   const [pokemonData, setPokemonData] = useState([]);
@@ -100,11 +101,16 @@ function App() {
             <CircularProgress />
           </div>
           <h1>Pokemon grid</h1>
-          <Grid container className={classes.buttonWrapper}>
-          </Grid>
-          <Grid container className={classes.root} spacing={2} alignItems="stretch">
-            {pokemonData.map((pokemon, i) => <Card key={i} pokemon={pokemon} />)}
-          </Grid>
+          <ul>
+            {props.favouritePokemonList.map((item, index) =>
+              <li key={index}>{item.name}</li>
+            )}
+          </ul>
+          <PokemonGrid
+            classes={classes}
+            pokemonData={pokemonData}
+            favouritePokemons={props.favouritePokemonList}
+          />
           <Grid container justify={"center"} className={classes.buttonWrapper}>
             <Button onClick={handleLoadMore} variant="contained" color="primary">
               Load More
@@ -116,4 +122,10 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    favouritePokemonList: state.favouritePokemonList,
+  }
+}
+
+export default connect(mapStateToProps)(App);
