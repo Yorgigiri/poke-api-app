@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from 'classnames/bind';
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
@@ -6,8 +7,8 @@ import Divider from "@material-ui/core/Divider";
 import { Button, List } from "@material-ui/core";
 import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
-import store from "../../store/store";
 import addPokemonToFavourites from "../../store/actionCreators/addPokemonToFavourites";
+import { connect } from "react-redux";
 
 
 const useStyles = makeStyles(() => ({
@@ -27,22 +28,51 @@ const useStyles = makeStyles(() => ({
     cardButton: {
         display: 'block',
         margin: '8px auto',
-    }
+    },
+    cardContainer: {
+        position: 'relative',
+        '&--is-favourite': {
+            '&::before': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                right: 0,
+                background: 'rgba(171,255,0,0.3)',
+                zIndex: 1,
+            }
+        }
+    },
 }));
 
-const Card = ({ pokemon }) => {
+const Card = (props) => {
     const classes = useStyles();
+    const { pokemon, favouritePokemons } = props;
+    const isFavourite = favouritePokemons.find(({ id }) => id === pokemon.id);
 
     return (
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            className={
+                classNames(
+                    classes.cardContainer,
+                    { [`${classes.cardContainer}--is-favourite`]: isFavourite}
+                )
+            }
+        >
             <Paper className={classes.paper}>
                 <div className={classes.cardImage}>
                   <img src={pokemon.sprites.front_default} alt=""/>
                 </div>
                 <Divider />
                 <Button
+                    disabled={isFavourite}
                     className={classes.cardButton}
-                    onClick={() => store.dispatch(addPokemonToFavourites(pokemon))}
+                    onClick={() => props.addPokemonToFavourites(pokemon)}
                     variant="contained"
                     color="primary"
                 >
@@ -85,4 +115,16 @@ const Card = ({ pokemon }) => {
     );
 }
 
-export default Card;
+const mapStateToProps = (state) => {;
+    return {
+        favouritePokemonList: state.favouritePokemonList,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addPokemonToFavourites: (pokemon) => dispatch(addPokemonToFavourites(pokemon))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Card);

@@ -8,8 +8,8 @@ import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Button } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Card from "./components/Card";
 import './App.css';
+import { PokemonGrid } from "./components/PokemonGrid/PokemonGrid";
 
 
 const useStyles = makeStyles(() => ({
@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
     visibility: 'visible',
     opacity: 1,
     zIndex: 100,
-    transition: '.4s ease visibility, .4s ease opacity',
+    transition: '.7s ease visibility, .7s ease opacity',
   },
   spinnerIsHidden: {
     visibility: 'hidden',
@@ -51,7 +51,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-function App() {
+function App(props) {
   const classes = useStyles();
   const scrollToBottom = useScrollToBottom();
   const [pokemonData, setPokemonData] = useState([]);
@@ -101,16 +101,16 @@ function App() {
             <CircularProgress />
           </div>
           <h1>Pokemon grid</h1>
-          <Grid container className={classes.buttonWrapper}>
-          </Grid>
-          <Grid container className={classes.root} spacing={2} alignItems="stretch">
-            {pokemonData.map((pokemon, i) =>
-              <Card
-                key={i}
-                pokemon={pokemon}
-              />
+          <ul>
+            {props.favouritePokemonList.map((item, index) =>
+              <li key={index}>{item.name}</li>
             )}
-          </Grid>
+          </ul>
+          <PokemonGrid
+            classes={classes}
+            pokemonData={pokemonData}
+            favouritePokemons={props.favouritePokemonList}
+          />
           <Grid container justify={"center"} className={classes.buttonWrapper}>
             <Button onClick={handleLoadMore} variant="contained" color="primary">
               Load More
@@ -123,11 +123,8 @@ function App() {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
-  const atata = [];
-
   return {
-    atata,
+    favouritePokemonList: state.favouritePokemonList,
   }
 }
 
