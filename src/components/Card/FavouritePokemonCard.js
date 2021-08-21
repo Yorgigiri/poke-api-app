@@ -8,6 +8,9 @@ import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListItem from "@material-ui/core/ListItem";
+import deletePokemonFromFavourites from "../../store/actionCreators/deletePokemonFromFavourites";
+import { connect } from "react-redux";
+
 
 
 const useStyles = makeStyles(() => ({
@@ -66,7 +69,7 @@ const FavouritePokemonCard = (props) => {
                     </div>
                 </div>
                 <div className={classes.deleteButtonContainer}>
-                    <IconButton>
+                    <IconButton onClick={() => props.deletePokemonFromFavourites(pokemon)}>
                         <DeleteIcon color="secondary" />
                     </IconButton>
                 </div>
@@ -75,4 +78,16 @@ const FavouritePokemonCard = (props) => {
     );
 }
 
-export default FavouritePokemonCard;
+const mapStateToProps = (state) => {;
+    return {
+        favouritePokemonList: state.favouritePokemonList,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deletePokemonFromFavourites: (pokemon) => dispatch(deletePokemonFromFavourites(pokemon))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FavouritePokemonCard);
