@@ -1,54 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from "react-router-dom";
 import { connect } from "react-redux";
-import classNames from 'classnames/bind';
-import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
+import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Button } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import './App.css';
-import { PokemonGrid } from "./components/PokemonGrid/PokemonGrid";
+import Home from "./pages/Home";
+import Favourites from "./pages/Favourites";
+import {
+  AppBar,
+  Button,
+  Toolbar,
+} from "@material-ui/core";
 
 
 const useStyles = makeStyles(() => ({
-  root: {
-    flexGrow: 1,
-  },
   app: {
     minHeight: '100vh',
     backgroundColor: '#f5f5f5',
   },
-  mainContainer: {
-    paddingTop: 8,
-    paddingBottom: 8,
+  toolbarLink: {
+    color: '#ffffff',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    }
   },
-  buttonWrapper: {
-    padding: '16px 0',
-  },
-  button: {
-    margin: 8,
-  },
-  spinner: {
-    position: "fixed",
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.7)',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    visibility: 'visible',
-    opacity: 1,
-    zIndex: 100,
-    transition: '.7s ease visibility, .7s ease opacity',
-  },
-  spinnerIsHidden: {
-    visibility: 'hidden',
-    opacity: 0,
-  }
 }));
 
 function App(props) {
@@ -91,33 +73,32 @@ function App(props) {
     scrollToBottom();
   }
 
-  const spinnerIsHidden = !loading && classes.spinnerIsHidden;
-
   return (
     <div className={classes.app}>
-      <ScrollToBottom>
-        <Container className={classes.mainContainer} justify={"center"} >
-          <div className={classNames(classes.spinner, spinnerIsHidden)}>
-            <CircularProgress />
-          </div>
-          <h1>Pokemon grid</h1>
-          <ul>
-            {props.favouritePokemonList.map((item, index) =>
-              <li key={index}>{item.name}</li>
-            )}
-          </ul>
-          <PokemonGrid
-            classes={classes}
-            pokemonData={pokemonData}
-            favouritePokemons={props.favouritePokemonList}
-          />
-          <Grid container justify={"center"} className={classes.buttonWrapper}>
-            <Button onClick={handleLoadMore} variant="contained" color="primary">
-              Load More
-            </Button>
-          </Grid>
-        </Container>
-      </ScrollToBottom>
+      <Router>
+        <AppBar position="fixed">
+          <Toolbar>
+            <Button><Link to="/" className={classes.toolbarLink}>Home</Link></Button>
+            <Button><Link to="/favourites" className={classes.toolbarLink}>Favourites</Link></Button>
+          </Toolbar>
+        </AppBar>
+        <Toolbar />
+        <Switch>
+          <Route path="/favourites">
+            <Favourites
+              favouritePokemonList={props.favouritePokemonList}
+            />
+          </Route>
+          <Route path="/">
+            <Home
+              isHiddenSpinner={!loading}
+              pokemonData={pokemonData}
+              favouritePokemonList={props.favouritePokemonList}
+              onLoadMore={handleLoadMore}
+            />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
