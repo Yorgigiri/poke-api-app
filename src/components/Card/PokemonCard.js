@@ -70,7 +70,7 @@ const PokemonCard = (props) => {
                 </div>
                 <Divider />
                 <Button
-                    disabled={isFavourite}
+                    disabled={!!isFavourite}
                     className={classes.cardButton}
                     onClick={() => props.addPokemonToFavourites(pokemon)}
                     variant="contained"
