@@ -1,4 +1,8 @@
-import Card from './Card';
+import PokemonCard from './PokemonCard';
+import FavouritePokemonCard from "./FavouritePokemonCard";
 
 
-export default Card;
+export {
+    PokemonCard,
+    FavouritePokemonCard,
+};

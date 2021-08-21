@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const Card = (props) => {
+const PokemonCard = (props) => {
     const classes = useStyles();
     const { pokemon, favouritePokemons } = props;
     const isFavourite = favouritePokemons.find(({ id }) => id === pokemon.id);
@@ -60,7 +60,7 @@ const Card = (props) => {
             className={
                 classNames(
                     classes.cardContainer,
-                    { [`${classes.cardContainer}--is-favourite`]: isFavourite}
+                    { [`${classes.cardContainer}--is-favourite`]: isFavourite }
                 )
             }
         >
@@ -97,8 +97,8 @@ const Card = (props) => {
                     {pokemon.weight}
                 </div>
                 <div>
-                  <Typography variant="subtitle2">Height:</Typography>
-                  {pokemon.height}
+                    <Typography variant="subtitle2">Height:</Typography>
+                    {pokemon.height}
                 </div>
                 <div>
                     <Typography variant="subtitle2">Abilities:</Typography>
@@ -127,4 +127,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Card);
+export default connect(mapStateToProps, mapDispatchToProps)(PokemonCard);

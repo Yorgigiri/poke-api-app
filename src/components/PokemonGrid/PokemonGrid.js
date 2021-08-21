@@ -1,15 +1,23 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import Card from "../Card";
+import { PokemonCard } from "../Card";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 
-export const PokemonGrid = (props) => {
-    const { classes, pokemonData, favouritePokemons } = props;
+const useStyles = makeStyles(() => ({
+    root: {
+        flexGrow: 1,
+    },
+}));
+
+const PokemonGrid = (props) => {
+    const classes = useStyles();
+    const { pokemonData, favouritePokemons } = props;
 
     return (
         <Grid container className={classes.root} spacing={2} alignItems="stretch">
             {pokemonData.map((pokemon, i) =>
-                <Card
+                <PokemonCard
                     key={i}
                     pokemon={pokemon}
                     favouritePokemons={favouritePokemons}
@@ -18,3 +26,5 @@ export const PokemonGrid = (props) => {
         </Grid>
     );
 };
+
+export default PokemonGrid;
