@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route, Link,
+  Route,
+  Link,
 } from "react-router-dom";
 import { connect } from "react-redux";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
@@ -11,7 +12,11 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import './App.css';
 import Home from "./pages/Home";
 import Favourites from "./pages/Favourites";
-import { AppBar, Button, IconButton, Toolbar } from "@material-ui/core";
+import {
+  AppBar,
+  Button,
+  Toolbar,
+} from "@material-ui/core";
 
 
 const useStyles = makeStyles(() => ({
