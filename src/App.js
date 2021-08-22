@@ -3,13 +3,13 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  // useRouteMatch,
   Link,
 } from "react-router-dom";
 import { connect } from "react-redux";
 import { useScrollToBottom } from 'react-scroll-to-bottom';
 import { getAllPokemon, getPokemon } from "./services/pokemon";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import './App.css';
 import Home from "./pages/Home";
 import Favourites from "./pages/Favourites";
 import {
@@ -40,6 +40,7 @@ function App(props) {
   const [nextUrl, setNextUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const initialUrl = 'https://pokeapi.co/api/v2/pokemon';
+  // const match = useRouteMatch();
 
   useEffect(() => {
     async function fetchData() {
@@ -78,18 +79,18 @@ function App(props) {
       <Router>
         <AppBar position="fixed">
           <Toolbar>
-            <Button><Link to="/" className={classes.toolbarLink}>Home</Link></Button>
-            <Button><Link to="/favourites" className={classes.toolbarLink}>Favourites</Link></Button>
+            <Button><Link to={`/`} className={classes.toolbarLink}>Home</Link></Button>
+            <Button><Link to={`/favourites`} className={classes.toolbarLink}>Favourites</Link></Button>
           </Toolbar>
         </AppBar>
         <Toolbar />
         <Switch>
-          <Route path="/favourites">
+          <Route path={`/favourites`}>
             <Favourites
               favouritePokemonList={props.favouritePokemonList}
             />
           </Route>
-          <Route path="/">
+          <Route path={`/`}>
             <Home
               isHiddenSpinner={!loading}
               pokemonData={pokemonData}
