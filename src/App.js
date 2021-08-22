@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
+  useRouteMatch,
   Link,
 } from "react-router-dom";
 import { connect } from "react-redux";
@@ -40,6 +41,7 @@ function App(props) {
   const [nextUrl, setNextUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const initialUrl = 'https://pokeapi.co/api/v2/pokemon';
+  const match = useRouteMatch();
 
   useEffect(() => {
     async function fetchData() {
@@ -78,18 +80,18 @@ function App(props) {
       <Router>
         <AppBar position="fixed">
           <Toolbar>
-            <Button><Link to="/" className={classes.toolbarLink}>Home</Link></Button>
-            <Button><Link to="/favourites" className={classes.toolbarLink}>Favourites</Link></Button>
+            <Button><Link to={`${match.url}`} className={classes.toolbarLink}>Home</Link></Button>
+            <Button><Link to={`${match.url}/favourites`} className={classes.toolbarLink}>Favourites</Link></Button>
           </Toolbar>
         </AppBar>
         <Toolbar />
         <Switch>
-          <Route path="/favourites">
+          <Route path={`${match.path}/favourites`}>
             <Favourites
               favouritePokemonList={props.favouritePokemonList}
             />
           </Route>
-          <Route path="/">
+          <Route path={match.path}>
             <Home
               isHiddenSpinner={!loading}
               pokemonData={pokemonData}
