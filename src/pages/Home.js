@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
         paddingBottom: 16,
     },
     buttonWrapper: {
+        justifyContent: 'center',
         padding: '16px 0',
     },
     button: {
@@ -62,7 +63,7 @@ const Home = (props) => {
                         pokemonData={pokemonData}
                         favouritePokemons={favouritePokemonList}
                     />
-                    <Grid container justify={"center"} className={classes.buttonWrapper}>
+                    <Grid container className={classes.buttonWrapper}>
                         <Button onClick={onLoadMore} variant="contained" color="primary">
                             Load More
                         </Button>
